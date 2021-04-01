@@ -2,6 +2,31 @@
 
 Issues tracker application
 
+## How to run
+
+You need install Dart language and Flutter framework
+available in [flutter.dev](https://flutter.dev)
+
+Clone this repository
+
+Run
+```shell
+flutter doctor
+```
+to check if Flutter was installed correctly and accept android-licenses
+
+Open a pubspec.yaml and touch in Pub get on AndroidStudio
+or run
+```shell
+flutter pub get
+```
+to get a project dependencies
+
+Open a android emulator and touch in run button on AndroidStudio or run with
+```shell
+flutter run
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
