@@ -12,6 +12,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _login = TextEditingController();
   TextEditingController _password = TextEditingController();
   bool _isLoading = false;
+  final Dio dio = Dio();
 
   @override
   void initState() {
@@ -134,23 +135,30 @@ class _LoginPageState extends State<LoginPage> {
 
   _doLogin(BuildContext context) async {
     FocusScope.of(context).unfocus();
+    var url = 'api/login';
+    dio.options.baseUrl = baseUrl;
+    dio.options.connectTimeout = 5000;
+    dio.options.receiveTimeout = 5000;
     setState(() {
       _isLoading = true;
     });
-    var url = baseUrl + 'api/login';
     try {
       print(url);
       var data = {
         "email": this._login.text,
         "password": this._password.text,
       };
-      var response = await Dio().post(url, data: data);
+      var response = await dio.post(url, data: data);
       print(response.data.toString());
     } on DioError catch (e) {
-      if (e.response.statusCode == 401) {
+      if (e.type == DioErrorType.connectTimeout) {
+        Toast.show("Verifique a conexão com a internete", context, duration: 5);
+      } else if (e.response.statusCode == 401) {
         print("não autorizado");
-        Toast.show("Confirmação de email pendente", context, duration: 3);
+        Toast.show("Confirmação de email pendente", context, duration: 5);
       }
+    } catch (e) {
+      // Error
     }
     setState(() {
       _isLoading = false;

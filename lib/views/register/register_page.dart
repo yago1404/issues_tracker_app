@@ -12,6 +12,14 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _password = TextEditingController();
   TextEditingController _confirmPassword = TextEditingController();
   TextEditingController _email = TextEditingController();
+  bool _isLoading = false;
+  Dio dio = Dio();
+
+  @override
+  void initState() {
+    this._isLoading = false;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: () {
                       _doRegister();
                     },
-                    child: Text(
+                    child: _isLoading ? CircularProgressIndicator.adaptive( backgroundColor: Colors.white,) : Text(
                       'Cadastrar-se',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -148,8 +156,14 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _doRegister() async {
+    setState(() {
+      this._isLoading = true;
+    });
     FocusScope.of(context).unfocus();
-    var url = baseUrl + 'api/signup';
+    var url = 'api/signup';
+    dio.options.baseUrl = baseUrl;
+    dio.options.connectTimeout = 5000;
+    dio.options.receiveTimeout = 5000;
     try {
       var data = {
         "name": "sem nome",
@@ -157,17 +171,27 @@ class _RegisterPageState extends State<RegisterPage> {
         "password": _password.text,
         "passwordConfirmation": _confirmPassword.text,
       };
-      var response = await Dio().post(url, data: data);
+      var response = await dio.post(url, data: data);
       if (response.data.toString() == "account successfully created") {
-        _showDialog(context, 'Enviamos um email para: ${_email.text}', returnToLogin: true);
+        _showDialog(context, 'Enviamos um email para: ${_email.text}',
+            returnToLogin: true);
+      }
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout) {
+        Toast.show("Verifique a conexão com a internete", context, duration: 5);
+      } else if(e.response.statusCode == 403) {
+        print(e);
+        Toast.show("Este login já existe", context, duration: 5);
       }
     } catch (e) {
-      print(e);
-      Toast.show("Este login já existe", context, duration: 3);
+      // Error
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
-  _showDialog(BuildContext context, message, {bool returnToLogin=false}) {
+  _showDialog(BuildContext context, message, {bool returnToLogin = false}) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -184,7 +208,8 @@ class _RegisterPageState extends State<RegisterPage> {
               onPressed: () {
                 if (returnToLogin) {
                   Navigator.pop(context);
-                  Navigator.pushNamedAndRemoveUntil(context, '', (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '', (route) => false);
                 } else {
                   Navigator.pop(context);
                 }

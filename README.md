@@ -27,6 +27,13 @@ Open a android emulator and touch in run button on AndroidStudio or run with
 flutter run
 ```
 
+To run this project witch a backend you need clone and run a [issues tracker backend](https://github.com/yago1404/issues-tracker)
+
+**Important**: To app run correctly, you need change in lib/commons/consts.dart
+```dart
+const String ip = "{ HERE }" // to your Ip
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
