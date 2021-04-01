@@ -133,6 +133,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _doLogin(BuildContext context) async {
+    FocusScope.of(context).unfocus();
     setState(() {
       _isLoading = true;
     });

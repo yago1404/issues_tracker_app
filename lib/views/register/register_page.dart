@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:issues_tracker_app/commons/consts.dart';
+import 'package:toast/toast.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -147,6 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _doRegister() async {
+    FocusScope.of(context).unfocus();
     var url = baseUrl + 'api/signup';
     try {
       var data = {
@@ -160,10 +162,8 @@ class _RegisterPageState extends State<RegisterPage> {
         _showDialog(context, 'Enviamos um email para: ${_email.text}', returnToLogin: true);
       }
     } catch (e) {
-      print("##########");
       print(e);
-      print("##########");
-      _showDialog(context, 'Este login já existe');
+      Toast.show("Este login já existe", context, duration: 3);
     }
   }
 
