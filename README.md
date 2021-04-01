@@ -27,7 +27,7 @@ Open a android emulator and touch in run button on AndroidStudio or run with
 flutter run
 ```
 
-To run this project witch a backend you need clone and run a [issues tracker backend](https://github.com/yago1404/issues-tracker)
+To run this project with a backend you need clone and run a [issues tracker backend](https://github.com/yago1404/issues-tracker)
 
 **Important**: To app run correctly, you need change in lib/commons/consts.dart
 ```dart
