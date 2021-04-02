@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:issues_tracker_app/commons/consts.dart';
 import 'package:toast/toast.dart';
 
@@ -9,7 +10,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _login = TextEditingController();
+  TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
   bool _isLoading = false;
   final Dio dio = Dio();
@@ -72,11 +73,15 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   padding: EdgeInsets.only(left: 30, right: 30),
                   child: TextField(
-                    controller: _login,
+                    controller: _email,
                     decoration: InputDecoration(
-                      hintText: 'Login',
-                      icon: Icon(Icons.person),
+                      hintText: 'E-mail',
+                      icon: Icon(Icons.alternate_email),
                     ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).nextFocus();
+                    },
+                    textInputAction: TextInputAction.next,
                   ),
                 ),
                 SizedBox(
@@ -91,6 +96,10 @@ class _LoginPageState extends State<LoginPage> {
                       hintText: 'Senha',
                       icon: Icon(Icons.vpn_key_outlined),
                     ),
+                    onEditingComplete: () {
+                      _doLogin(context);
+                    },
+                    textInputAction: TextInputAction.done,
                   ),
                 ),
                 SizedBox(
@@ -135,6 +144,10 @@ class _LoginPageState extends State<LoginPage> {
 
   _doLogin(BuildContext context) async {
     FocusScope.of(context).unfocus();
+    if (_email.text == "" || _password.text == "") {
+      Toast.show("É preciso preencher todos os campos", context, duration: 5);
+      return;
+    }
     var url = 'api/login';
     dio.options.baseUrl = baseUrl;
     dio.options.connectTimeout = 5000;
@@ -145,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       print(url);
       var data = {
-        "email": this._login.text,
+        "email": this._email.text,
         "password": this._password.text,
       };
       var response = await dio.post(url, data: data);

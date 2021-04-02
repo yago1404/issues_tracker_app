@@ -12,6 +12,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _password = TextEditingController();
   TextEditingController _confirmPassword = TextEditingController();
   TextEditingController _email = TextEditingController();
+  TextEditingController _name = TextEditingController();
   bool _isLoading = false;
   Dio dio = Dio();
 
@@ -88,11 +89,32 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   padding: EdgeInsets.only(left: 30, right: 30),
                   child: TextField(
-                    controller: _email,
+                    controller: _name,
                     decoration: InputDecoration(
-                      hintText: 'Login',
+                      hintText: 'Nome',
                       icon: Icon(Icons.person),
                     ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).nextFocus();
+                    },
+                    textInputAction: TextInputAction.next,
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 30, right: 30),
+                  child: TextField(
+                    controller: _email,
+                    decoration: InputDecoration(
+                      hintText: 'E-mail',
+                      icon: Icon(Icons.alternate_email),
+                    ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).nextFocus();
+                    },
+                    textInputAction: TextInputAction.next,
                   ),
                 ),
                 SizedBox(
@@ -107,6 +129,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       hintText: 'Senha',
                       icon: Icon(Icons.vpn_key_outlined),
                     ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).nextFocus();
+                    },
+                    textInputAction: TextInputAction.next,
                   ),
                 ),
                 SizedBox(
@@ -121,6 +147,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       hintText: 'Repita a senha',
                       icon: Icon(Icons.vpn_key_outlined),
                     ),
+                    onEditingComplete: () {
+                      _doRegister();
+                    },
+                    textInputAction: TextInputAction.done,
                   ),
                 ),
                 SizedBox(
@@ -166,7 +196,7 @@ class _RegisterPageState extends State<RegisterPage> {
     dio.options.receiveTimeout = 5000;
     try {
       var data = {
-        "name": "sem nome",
+        "name": _name.text,
         "email": _email.text,
         "password": _password.text,
         "passwordConfirmation": _confirmPassword.text,
