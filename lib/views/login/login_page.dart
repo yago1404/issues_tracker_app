@@ -32,14 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Colors.purpleAccent,
-            Colors.purple,
-          ],
-        ),
+        gradient: defaultGradient,
       ),
       child: ListView(
         children: [
@@ -167,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
       if (e.type == DioErrorType.connectTimeout) {
         Toast.show("Verifique a conexão com a internete", context, duration: 5);
       } else if (e.response.statusCode == 401) {
-        print("não autorizado");
+        print(e.response.data);
         Toast.show("Confirmação de email pendente", context, duration: 5);
       }
     } catch (e) {
